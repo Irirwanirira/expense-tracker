@@ -4,11 +4,10 @@ import transactionReducer from '../features/transaction/transactionSlice';
 import categoryReducer from '../features/category/categoriesSlice';
 
 const reducer = combineReducers({
-    transactions: transactionReducer,
-    categories: categoryReducer
+  transactions: transactionReducer,
+  categories: categoryReducer,
 });
 
-const store = configureStore({reducer});
+const store = configureStore({ reducer });
 
 export default store;
-

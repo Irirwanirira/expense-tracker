@@ -1,36 +1,36 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
-import { useDispatch } from 'react-redux'
-import { deleteTransactions } from './transactionSlice'
+import { useDispatch } from 'react-redux';
+import { deleteTransactions } from './transactionSlice';
 
-
-function Transaction({transaction}) {
-
-
-    const dispatch = useDispatch()
+function Transaction({ transaction }) {
+  const dispatch = useDispatch();
   return (
     <Container>
-        {transaction && (
-        <div className='single'>
-            <div className='single-transaction'>
-              <p>{transaction.date}</p>
-              <p>{transaction.category}</p>
-              <p>{transaction.name}</p>
-              <p>{transaction.price}</p>
-              <p>{transaction.method}</p>
+      {transaction && (
+        <div>
+          <div className='single-transaction'>
+            <p>{transaction.date}</p>
+            <p>{transaction.category}</p>
+            <p>{transaction.name}</p>
+            <p>{transaction.price}</p>
+            <p>{transaction.method}</p>
 
-              <button onClick={()=>dispatch(deleteTransactions(transaction._id))} >Delete</button>
-            </div>
+            <button
+              onClick={() => dispatch(deleteTransactions(transaction._id))}
+            >
+              Delete
+            </button>
+          </div>
         </div>
-)}
+      )}
     </Container>
-  )
+  );
 }
 
-const Container = styled.div `
-
-  .single-transaction{
+const Container = styled.div`
+  .single-transaction {
     padding: 0;
     margin: 0;
     display: flex;
@@ -38,10 +38,10 @@ const Container = styled.div `
     justify-content: space-between;
     border-bottom: solid 1px grey;
 
-    p{
+    p {
       margin: 0.6rem 0 0.4rem 0;
     }
   }
-`
+`;
 
-export default Transaction
+export default Transaction;
