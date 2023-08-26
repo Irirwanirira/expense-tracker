@@ -1,15 +1,13 @@
-import React from 'react'
+import React from 'react';
 
-function AllCategories({categories}) {
+function AllCategories({ categories }) {
   return (
     <select>
-        {
-          categories.map((category) =>(
-            <option  >{category.name}</option>
-          ))
-        }
+      {categories.map((category) => (
+        <option>{category.name}</option>
+      ))}
     </select>
-  )
+  );
 }
 
-export default AllCategories
+export default AllCategories;
