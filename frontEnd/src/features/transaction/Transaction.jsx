@@ -12,20 +12,15 @@ function Transaction({transaction}) {
   return (
     <Container>
         {transaction && (
-        <div>
+        <div className='single'>
             <div className='single-transaction'>
-            <div>
-                <p>{transaction.name}</p>
-                <p>{transaction.date}</p>
-            </div>
-            <div>
-            <p>{transaction.price}</p>
-            <p>{transaction.method}</p>
-            <p>{transaction.category}</p>
+              <p>{transaction.date}</p>
+              <p>{transaction.category}</p>
+              <p>{transaction.name}</p>
+              <p>{transaction.price}</p>
+              <p>{transaction.method}</p>
 
-            </div>
-          
-            <button onClick={()=>dispatch(deleteTransactions(transaction._id))} >Delete</button>
+              <button onClick={()=>dispatch(deleteTransactions(transaction._id))} >Delete</button>
             </div>
         </div>
 )}
@@ -34,10 +29,18 @@ function Transaction({transaction}) {
 }
 
 const Container = styled.div `
+
   .single-transaction{
+    padding: 0;
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: solid 1px grey;
+
+    p{
+      margin: 0.6rem 0 0.4rem 0;
+    }
   }
 `
 
