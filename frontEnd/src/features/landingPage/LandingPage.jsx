@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components'
@@ -8,6 +8,7 @@ import Alltransaction from '../transaction/Alltransaction';
 import TransactionForm from '../transaction/TransactionForm';
 import CategoryForm from '../category/CategoryForm';
 import Balance from '../NavBar/Balance';
+import Header from '../NavBar/Header';
 
 
 
@@ -32,20 +33,16 @@ function LandingPage() {
 
     return (
         <AppContainer>
-          <div className="item1">Header</div>
+          <div className="item1"><Header /></div>
           <div className="item2"><Balance transactions={transactions}/></div>
 
           <div className="item4">
 
-                <p>Add Category</p>
                 <CategoryForm submitCategory={submitCategory}/>
 
-                <p>Add Transaction</p>
                 <TransactionForm categories={categories} handleTransaction={handleTransaction}/>
           </div>
           <div className="item5">
-          <p>Transfer History</p>
-
             <Alltransaction transactions={transactions} />
         </div>
     
@@ -54,15 +51,16 @@ function LandingPage() {
 }
     
     const AppContainer = styled.div`
+      background-color: #5dc3f3;
+      height: 100vh;
       display: grid;
-      grid-template-columns:repeat(11, 1fr) ;
+      grid-template-columns:repeat(11, 1fr);
       .item1{
         grid-column: 1/13;
         background-color: blue;
       }
       .item2{
         grid-column: 2/10;
-        background-color: yellow;
       }
       .item3{
         grid-column: 6/10;
@@ -70,11 +68,10 @@ function LandingPage() {
       }
       .item4{
         grid-column: 2/6;
-        background-color: violet;
-    
+        margin-right: 2rem;    
       }
       .item5{
-        grid-column: 6/10;
+        grid-column: 6/11;
       }
     `
     
