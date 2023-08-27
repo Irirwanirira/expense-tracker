@@ -11,7 +11,7 @@ export const fetchCategories = createAsyncThunk('category/fetch', async () => {
   } catch (err) {
     console.log(err);
   }
-});
+} );
 
 export const postCategory = createAsyncThunk(
   'category/post',
