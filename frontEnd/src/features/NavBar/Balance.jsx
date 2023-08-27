@@ -51,7 +51,7 @@ function Balance({ transactions }) {
       <div className='wallet'>
         <p className={`${Balance < totalExpenses ? 'red-flag' : 'good-track'}`}>
           Balance:
-          <span>{`${Balance < 0 ? Balance * -1 : Balance}`}</span>
+          <span>{Balance}</span>
         </p>
         <p className={`${bankIncome < 0 ? 'red-flag' : 'good-track'}`}>
           Bank: {bankIncome}

@@ -16,6 +16,7 @@ function Transaction({ transaction }) {
             <p>{transaction.name}</p>
             <p>{transaction.price}</p>
             <p>{transaction.method}</p>
+            <p className={`${transaction.option === 'Income' ? 'green-flag' : 'red-flag'}`}>{transaction.option}</p>
 
             <button
               onClick={() => dispatch(deleteTransactions(transaction._id))}
@@ -40,6 +41,14 @@ const Container = styled.div`
 
     p {
       margin: 0.6rem 0 0.4rem 0;
+    }
+    .green-flag{
+      color: green;
+      font-weight: bold;
+    }
+    .red-flag{
+      font-weight: bold;
+      color: #7a0303;
     }
   }
 `;
