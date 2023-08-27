@@ -14,7 +14,7 @@ function Transaction({ transaction }) {
             <p>{transaction.date}</p>
             <p>{transaction.category}</p>
             <p>{transaction.name}</p>
-            <p>{transaction.price}</p>
+            <p>${transaction.price}</p>
             <p>{transaction.method}</p>
             <p className={`${transaction.option === 'Income' ? 'green-flag' : 'red-flag'}`}>{transaction.option}</p>
 
