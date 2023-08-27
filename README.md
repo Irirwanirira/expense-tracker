@@ -29,6 +29,10 @@
 
 **EXPENSE TRACKER is a user-friendly app designed to effortlessly monitor your expenses and income. Whenever your expenses surpass your balance, it promptly alerts you with attention-grabbing red flags in the balance section. On the other hand, when you're effectively managing your expenses, it rewards your progress with a satisfying shade of green. With Expense Tracker, you can easily stay on top of your financial situation.**
 
+![](./frontEnd/public/expense.png)
+![](./frontEnd/public/mobile.png)
+
+
 
 
 ## 🛠 Built With <a name="built-with"></a>

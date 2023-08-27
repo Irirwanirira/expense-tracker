@@ -14,9 +14,15 @@ const category = Schema({
     name: { type: String, required: true}
 });
 
+// const subCategory = Schema({
+//     name: {type: String, required: true}
+// })
+// 
 const Category = mongoose.model('categories', category);
 const Transaction = mongoose.model('transactions', transaction);
+// const SubCategory = mongoose.model('subcategory', subCategory);
 
 module.exports = {
-    Transaction, Category
+    Transaction, Category,
+    // SUbCategory
 };

@@ -42,7 +42,6 @@ function LandingPage() {
 
       <div className='item4'>
         <CategoryForm submitCategory={submitCategory} />
-
         <TransactionForm
           categories={categories}
           handleTransaction={handleTransaction}
@@ -55,21 +54,19 @@ function LandingPage() {
   );
 }
 
-const AppContainer = styled.div`
-  background-color: #5dc3f3;
+const AppContainer = styled.div`  
+  background: linear-gradient(to right, #301847, #c9303f);
   height: 100vh;
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   .item1 {
     grid-column: 1/13;
-    background-color: blue;
   }
   .item2 {
-    grid-column: 2/10;
+    grid-column: 3/10;
   }
   .item3 {
     grid-column: 6/10;
-    background-color: green;
   }
   .item4 {
     grid-column: 2/6;
@@ -78,6 +75,26 @@ const AppContainer = styled.div`
   .item5 {
     grid-column: 6/11;
   }
+  @media screen and (max-width: 600px) {
+    height: max-content;
+    grid-template-columns: repeat(6, 1fr);
+    .item1 {
+      grid-column: 1/7;
+    }
+    .item2 {
+      grid-column: 1/7;
+    }
+    .item3 {
+      grid-column: 1/7;
+    }
+    .item4 {
+      grid-column: 1/7;
+    }
+    .item5 {
+      grid-column: 1/7;
+    }
+  }
+
 `;
 
 export default LandingPage;

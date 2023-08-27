@@ -5,7 +5,7 @@ function Header() {
   return (
     <HeaderWrapper>
       <h1>
-        E<span>x</span>PENSE TRACKER
+        E<span className='x'>x</span>PENSE <span className='track'>TRACKER</span>
       </h1>
     </HeaderWrapper>
   );
@@ -17,9 +17,16 @@ const HeaderWrapper = styled.div`
     text-align: center;
     font-size: 1.5rem;
     color: white;
-    span {
+    font-family:'nunito', sans-serif;
+    .x {
       font-size: 4rem;
+      font-style: italic;
       color: red;
+      margin-right: -0.5rem;
+    }
+    .track{
+      font-size: 2.5rem;
+      font-style: italic;
     }
   }
 `;

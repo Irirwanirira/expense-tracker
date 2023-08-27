@@ -5,7 +5,7 @@ import Transaction from './Transaction';
 function Alltransaction({ transactions }) {
   return (
     <AllContainer>
-      <p className='history'>Transactions History</p>
+      <p className='history'>Transactions History</p>   
 
       {transactions.length === 0 ? (
         <h3 className='empty'>Empty history</h3>
@@ -25,10 +25,12 @@ function Alltransaction({ transactions }) {
 
 const AllContainer = styled.div`
   .history {
-    font-weight: bold;
+    font-size: 1.5rem;
+    color: #fff;
+
   }
   .empty {
-    color: green;
+    color: #33f333;
     font-size: 2rem;
   }
   .showTransaction {
