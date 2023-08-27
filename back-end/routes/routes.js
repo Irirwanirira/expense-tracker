@@ -6,7 +6,7 @@ Router.route('/v1/api/transactions').post(async (req, res) => {
         const { name, date, category, option, price, method} = req.body;
         const newTrans = await Transaction.create({ name, date, category, option, price, method});
         res.status(200).send({
-            newTrans: { name: newTrans.name, price: newTrans.price, date: newTrans.data, method: newTrans.method, category: newTrans.category, option: newTrans.option, _id: newTrans._id}
+            newTrans: { name: newTrans.name, price: newTrans.price, date: newTrans.date, method: newTrans.method, category: newTrans.category, option: newTrans.option, _id: newTrans._id}
         });
     } catch(err) {
         res.status(400).send({error: "Error occurred while creating new transaction"})
