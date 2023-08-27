@@ -51,17 +51,17 @@ function Balance({ transactions }) {
       <div className='wallet'>
         <p className={`${Balance < totalExpenses ? 'red-flag' : 'good-track'}`}>
           Balance:
-          <span>{Balance}</span>
+          <span> ${Balance}</span>
         </p>
         <p className={`${bankIncome < 0 ? 'red-flag' : 'good-track'}`}>
-          Bank: {bankIncome}
+          Bank: ${bankIncome}
         </p>
         <p className={`${cashIncome < 0 ? 'red-flag' : 'good-track'}`}>
-          Cash: {cashIncome}
+          Cash: ${cashIncome}
         </p>
       </div>
       <div>
-        <p className='expense'>total expense: {totalExpenses}</p>
+        <p className='expense'>total expense: ${totalExpenses}</p>
       </div>
     </WrapperHead>
   );
