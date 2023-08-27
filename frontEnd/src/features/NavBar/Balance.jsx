@@ -12,7 +12,7 @@ function Balance({ transactions }) {
     .filter((t) => t.option === 'Income')
     .reduce((a, b) => {
       return a + b.price;
-    }, 0);
+  }, 0);
 
   const totalExpensesInCash = transactions
     .filter((t) => t.option === 'Expense' && t.method === 'cash')
@@ -61,7 +61,7 @@ function Balance({ transactions }) {
         </p>
       </div>
       <div>
-        <p className='expense'>total expense: ${totalExpenses}</p>
+        <p className='expense'>Total expense: ${totalExpenses}</p>
       </div>
     </WrapperHead>
   );
@@ -70,6 +70,9 @@ function Balance({ transactions }) {
 const WrapperHead = styled.div`
   display: flex;
   justify-content: space-around;
+  border:  20px ;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+
   .wallet {
     p {
       font-size: 1.5rem;
@@ -80,12 +83,13 @@ const WrapperHead = styled.div`
       color: red;
     }
     .good-track {
-      color: green;
+      color: #33f333;
     }
   }
   .expense {
     font-size: 1.5rem;
     font-weight: bold;
+    color: #fff;
   }
 `;
 

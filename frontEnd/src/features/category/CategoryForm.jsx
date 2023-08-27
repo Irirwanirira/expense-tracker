@@ -18,7 +18,7 @@ function CategoryForm({ submitCategory }) {
   return (
     <FormContainer>
       <div>
-        <p>Add Category</p>
+        <p style={{color:"#fff", fontSize:"1.2rem"}}>Add Category</p>
       </div>
       <form onSubmit={handleSubmit(submit)}>
         <input
@@ -29,6 +29,7 @@ function CategoryForm({ submitCategory }) {
         {errors.name && <p>category name is required.</p>}
 
         <input
+          style={{margin:"2px",color: "#1a0101"}}
           className='submit'
           type='submit'
         />
@@ -45,11 +46,19 @@ const FormContainer = styled.div`
     input {
       padding: 0.3rem;
       border: none;
+      border-radius: 5px;
+    }
+    input:focus {
+      outline: none;
     }
     .submit {
-      color: white;
       font-weight: bold;
-      background-color: grey;
+      background-color: #999;
+      cursor: pointer;
+      &:hover {
+        background-color: #fff;
+        color: #000;
+      }
     }
   }
 `;

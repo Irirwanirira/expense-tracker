@@ -18,7 +18,7 @@ function TransactionForm({ handleTransaction, categories }) {
   return (
     <FormWrapper>
       <div>
-        <p>Add Transaction</p>
+        <p style={{color:"#fff", fontSize:"1.2rem"}}>Add Transaction</p>
       </div>
 
       <form onSubmit={handleSubmit(submit)}>
@@ -49,7 +49,7 @@ function TransactionForm({ handleTransaction, categories }) {
           {...register('method')}
           required
         >
-          <option>Method</option>
+          <option disabled >Select Payment Method</option>
           <option>cash</option>
           <option>bank</option>
         </select>
@@ -59,6 +59,7 @@ function TransactionForm({ handleTransaction, categories }) {
           id=''
           {...register('option')}
         >
+          <option disabled >Select expense type</option>
           <option>Expense</option>
           <option>Income</option>
         </select>
@@ -92,10 +93,22 @@ const FormWrapper = styled.div`
     select {
       border: none;
       padding: 0.3rem;
+      border-radius: 5px;
+    }
+    select:focus,
+    input:focus {
+      outline: none;
     }
     .submit {
       font-size: 1rem;
+      color: #1a0101;
       font-weight: bold;
+      cursor: pointer;
+      background-color: #999;
+      border-radius: 5px;
+      &:hover {
+        background-color: #fff;
+        color: #000;}
     }
   }
 `;
