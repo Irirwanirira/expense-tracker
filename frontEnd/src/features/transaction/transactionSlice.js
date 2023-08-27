@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const url = 'http://localhost:5000/v1/api/transactions';
+// const url = 'http://localhost:5000/v1/api/transactions';
+const url = 'https://expense-tracker-pdh7.onrender.com';
 
 export const fetchTransactions = createAsyncThunk(
   'transaction/fetch',
