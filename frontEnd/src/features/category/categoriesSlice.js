@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const url = 'https://expense-tracker-pdh7.onrender.com/v1/api/categories';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+const url = `${API_BASE_URL}/v1/api/categories`;
 
 export const fetchCategories = createAsyncThunk('category/fetch', async () => {
   try {
@@ -39,14 +40,17 @@ const categorySlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload.categories;
+        state.data = action.payload.data || action.payload.categories || [];
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.isLoading = false;
       })
       .addCase(postCategory.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = [...state.data, action.payload.category];
+        const newCategory = action.payload.data || action.payload.category;
+        if (newCategory) {
+          state.data = [...state.data, newCategory];
+        }
       });
   },
 });
