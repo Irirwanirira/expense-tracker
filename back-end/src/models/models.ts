@@ -19,6 +19,8 @@ export interface ITransaction extends Document {
   category?: string;
   price: number;
   option: 'INCOME' | 'EXPENSE';
+  description?: string;
+  tags?: string[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -33,6 +35,7 @@ export interface ICategory extends Document {
 // Transaction Schema
 const transactionSchema = new Schema<ITransaction>(
   {
+    email: { type: String, required: true, index: true },
     name: { type: String, required: true, trim: true },
     date: { type: String, required: true },
     method: { type: String, required: true, trim: true },
@@ -43,7 +46,9 @@ const transactionSchema = new Schema<ITransaction>(
       required: true,
       enum: ['INCOME', 'EXPENSE'],
       default: 'EXPENSE'
-    }
+    },
+    description: { type: String, trim: true },
+    tags: [{ type: String, trim: true }]
   },
   { timestamps: true }
 );
@@ -85,10 +90,9 @@ userSchema.methods.comparePassword = async function (
 };
 
 // Create indexes for better query performance
-transactionSchema.index({ date: -1 });
-transactionSchema.index({ category: 1 });
-transactionSchema.index({ option: 1 });
-transactionSchema.index({ email: 1 });
+transactionSchema.index({ email: 1, date: -1 });
+transactionSchema.index({ email: 1, category: 1 });
+transactionSchema.index({ email: 1, option: 1 });
 categorySchema.index({ name: 1 });
 userSchema.index({ email: 1 });
 

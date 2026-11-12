@@ -8,7 +8,7 @@ dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const transactions_1 = __importDefault(require("./routes/transactions"));
+const transactionsEnhanced_1 = __importDefault(require("./routes/transactionsEnhanced"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const auth_2 = require("./middleware/auth");
 const app = (0, express_1.default)();
@@ -29,7 +29,7 @@ app.get('/health', (_req, res) => {
 });
 // Protected Routes (require authentication)
 app.use(auth_2.authMiddleware);
-app.use(transactions_1.default);
+app.use(transactionsEnhanced_1.default);
 // 404 handler
 app.use((_req, res) => {
     res.status(404).json({ error: 'Endpoint not found' });

@@ -41,6 +41,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // Transaction Schema
 const transactionSchema = new mongoose_1.Schema({
+    email: { type: String, required: true, index: true },
     name: { type: String, required: true, trim: true },
     date: { type: String, required: true },
     method: { type: String, required: true, trim: true },
@@ -51,7 +52,9 @@ const transactionSchema = new mongoose_1.Schema({
         required: true,
         enum: ['INCOME', 'EXPENSE'],
         default: 'EXPENSE'
-    }
+    },
+    description: { type: String, trim: true },
+    tags: [{ type: String, trim: true }]
 }, { timestamps: true });
 // Category Schema
 const categorySchema = new mongoose_1.Schema({
@@ -80,10 +83,9 @@ userSchema.methods.comparePassword = async function (password) {
     return bcryptjs_1.default.compare(password, this.password);
 };
 // Create indexes for better query performance
-transactionSchema.index({ date: -1 });
-transactionSchema.index({ category: 1 });
-transactionSchema.index({ option: 1 });
-transactionSchema.index({ email: 1 });
+transactionSchema.index({ email: 1, date: -1 });
+transactionSchema.index({ email: 1, category: 1 });
+transactionSchema.index({ email: 1, option: 1 });
 categorySchema.index({ name: 1 });
 userSchema.index({ email: 1 });
 // Models

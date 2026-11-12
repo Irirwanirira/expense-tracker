@@ -14,6 +14,8 @@ export interface ITransaction extends Document {
     category?: string;
     price: number;
     option: 'INCOME' | 'EXPENSE';
+    description?: string;
+    tags?: string[];
     createdAt?: Date;
     updatedAt?: Date;
 }

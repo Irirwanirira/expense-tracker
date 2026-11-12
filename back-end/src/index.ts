@@ -4,7 +4,7 @@ dotenv.config();
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import transactionRoutes from './routes/transactions';
+import transactionRoutes from './routes/transactionsEnhanced';
 import authRoutes from './routes/auth';
 import { authMiddleware } from './middleware/auth';
 
