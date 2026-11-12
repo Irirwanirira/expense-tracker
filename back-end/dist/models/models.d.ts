@@ -14,11 +14,25 @@ export interface ITransaction extends Document {
     category?: string;
     price: number;
     option: 'INCOME' | 'EXPENSE';
+    description?: string;
+    tags?: string[];
     createdAt?: Date;
     updatedAt?: Date;
 }
 export interface ICategory extends Document {
     name: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+export interface IBudget extends Document {
+    email: string;
+    category: string;
+    limit: number;
+    period: 'MONTHLY' | 'YEARLY';
+    startDate: string;
+    endDate: string;
+    spent?: number;
+    status?: 'UNDER' | 'WARNING' | 'EXCEEDED';
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -29,6 +43,9 @@ export declare const Transaction: mongoose.Model<ITransaction, {}, {}, {}, Docum
     _id: mongoose.Types.ObjectId;
 }, any>;
 export declare const Category: mongoose.Model<ICategory, {}, {}, {}, Document<unknown, {}, ICategory> & ICategory & {
+    _id: mongoose.Types.ObjectId;
+}, any>;
+export declare const Budget: mongoose.Model<IBudget, {}, {}, {}, Document<unknown, {}, IBudget> & IBudget & {
     _id: mongoose.Types.ObjectId;
 }, any>;
 //# sourceMappingURL=models.d.ts.map

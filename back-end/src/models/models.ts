@@ -19,6 +19,8 @@ export interface ITransaction extends Document {
   category?: string;
   price: number;
   option: 'INCOME' | 'EXPENSE';
+  description?: string;
+  tags?: string[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -30,9 +32,24 @@ export interface ICategory extends Document {
   updatedAt?: Date;
 }
 
+// Budget Document Interface
+export interface IBudget extends Document {
+  email: string;
+  category: string;
+  limit: number;
+  period: 'MONTHLY' | 'YEARLY';
+  startDate: string;
+  endDate: string;
+  spent?: number;
+  status?: 'UNDER' | 'WARNING' | 'EXCEEDED';
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 // Transaction Schema
 const transactionSchema = new Schema<ITransaction>(
   {
+    email: { type: String, required: true, index: true },
     name: { type: String, required: true, trim: true },
     date: { type: String, required: true },
     method: { type: String, required: true, trim: true },
@@ -43,7 +60,9 @@ const transactionSchema = new Schema<ITransaction>(
       required: true,
       enum: ['INCOME', 'EXPENSE'],
       default: 'EXPENSE'
-    }
+    },
+    description: { type: String, trim: true },
+    tags: [{ type: String, trim: true }]
   },
   { timestamps: true }
 );
@@ -52,6 +71,30 @@ const transactionSchema = new Schema<ITransaction>(
 const categorySchema = new Schema<ICategory>(
   {
     name: { type: String, required: true, trim: true, unique: true }
+  },
+  { timestamps: true }
+);
+
+// Budget Schema
+const budgetSchema = new Schema<IBudget>(
+  {
+    email: { type: String, required: true, index: true },
+    category: { type: String, required: true },
+    limit: { type: Number, required: true, min: 0 },
+    period: {
+      type: String,
+      required: true,
+      enum: ['MONTHLY', 'YEARLY'],
+      default: 'MONTHLY'
+    },
+    startDate: { type: String, required: true },
+    endDate: { type: String, required: true },
+    spent: { type: Number, default: 0 },
+    status: {
+      type: String,
+      enum: ['UNDER', 'WARNING', 'EXCEEDED'],
+      default: 'UNDER'
+    }
   },
   { timestamps: true }
 );
@@ -85,14 +128,16 @@ userSchema.methods.comparePassword = async function (
 };
 
 // Create indexes for better query performance
-transactionSchema.index({ date: -1 });
-transactionSchema.index({ category: 1 });
-transactionSchema.index({ option: 1 });
-transactionSchema.index({ email: 1 });
+transactionSchema.index({ email: 1, date: -1 });
+transactionSchema.index({ email: 1, category: 1 });
+transactionSchema.index({ email: 1, option: 1 });
 categorySchema.index({ name: 1 });
 userSchema.index({ email: 1 });
+budgetSchema.index({ email: 1, category: 1 });
+budgetSchema.index({ email: 1, startDate: 1, endDate: 1 });
 
 // Models
 export const User = mongoose.model<IUser>('users', userSchema);
 export const Transaction = mongoose.model<ITransaction>('transactions', transactionSchema);
 export const Category = mongoose.model<ICategory>('categories', categorySchema);
+export const Budget = mongoose.model<IBudget>('budgets', budgetSchema);

@@ -4,7 +4,10 @@ dotenv.config();
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import transactionRoutes from './routes/transactions';
+import transactionRoutes from './routes/transactionsEnhanced';
+import dashboardRoutes from './routes/dashboard';
+import budgetRoutes from './routes/budgets';
+import reportRoutes from './routes/reports';
 import authRoutes from './routes/auth';
 import { authMiddleware } from './middleware/auth';
 
@@ -32,6 +35,9 @@ app.get('/health', (_req: Request, res: Response): void => {
 // Protected Routes (require authentication)
 app.use(authMiddleware);
 app.use(transactionRoutes);
+app.use(dashboardRoutes);
+app.use(budgetRoutes);
+app.use(reportRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response): void => {

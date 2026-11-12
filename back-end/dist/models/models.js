@@ -36,11 +36,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Category = exports.Transaction = exports.User = void 0;
+exports.Budget = exports.Category = exports.Transaction = exports.User = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // Transaction Schema
 const transactionSchema = new mongoose_1.Schema({
+    email: { type: String, required: true, index: true },
     name: { type: String, required: true, trim: true },
     date: { type: String, required: true },
     method: { type: String, required: true, trim: true },
@@ -51,11 +52,33 @@ const transactionSchema = new mongoose_1.Schema({
         required: true,
         enum: ['INCOME', 'EXPENSE'],
         default: 'EXPENSE'
-    }
+    },
+    description: { type: String, trim: true },
+    tags: [{ type: String, trim: true }]
 }, { timestamps: true });
 // Category Schema
 const categorySchema = new mongoose_1.Schema({
     name: { type: String, required: true, trim: true, unique: true }
+}, { timestamps: true });
+// Budget Schema
+const budgetSchema = new mongoose_1.Schema({
+    email: { type: String, required: true, index: true },
+    category: { type: String, required: true },
+    limit: { type: Number, required: true, min: 0 },
+    period: {
+        type: String,
+        required: true,
+        enum: ['MONTHLY', 'YEARLY'],
+        default: 'MONTHLY'
+    },
+    startDate: { type: String, required: true },
+    endDate: { type: String, required: true },
+    spent: { type: Number, default: 0 },
+    status: {
+        type: String,
+        enum: ['UNDER', 'WARNING', 'EXCEEDED'],
+        default: 'UNDER'
+    }
 }, { timestamps: true });
 // User Schema
 const userSchema = new mongoose_1.Schema({
@@ -80,14 +103,16 @@ userSchema.methods.comparePassword = async function (password) {
     return bcryptjs_1.default.compare(password, this.password);
 };
 // Create indexes for better query performance
-transactionSchema.index({ date: -1 });
-transactionSchema.index({ category: 1 });
-transactionSchema.index({ option: 1 });
-transactionSchema.index({ email: 1 });
+transactionSchema.index({ email: 1, date: -1 });
+transactionSchema.index({ email: 1, category: 1 });
+transactionSchema.index({ email: 1, option: 1 });
 categorySchema.index({ name: 1 });
 userSchema.index({ email: 1 });
+budgetSchema.index({ email: 1, category: 1 });
+budgetSchema.index({ email: 1, startDate: 1, endDate: 1 });
 // Models
 exports.User = mongoose_1.default.model('users', userSchema);
 exports.Transaction = mongoose_1.default.model('transactions', transactionSchema);
 exports.Category = mongoose_1.default.model('categories', categorySchema);
+exports.Budget = mongoose_1.default.model('budgets', budgetSchema);
 //# sourceMappingURL=models.js.map

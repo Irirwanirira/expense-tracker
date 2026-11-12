@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateCategorySchema = exports.CreateTransactionSchema = exports.RefreshTokenSchema = exports.LoginSchema = exports.RegisterSchema = void 0;
+exports.CustomReportSchema = exports.ExportTransactionsSchema = exports.MonthlyStatementSchema = exports.UpdateBudgetSchema = exports.CreateBudgetSchema = exports.CreateCategorySchema = exports.FilterTransactionsSchema = exports.UpdateTransactionSchema = exports.CreateTransactionSchema = exports.RefreshTokenSchema = exports.LoginSchema = exports.RegisterSchema = void 0;
 const zod_1 = require("zod");
 // Auth Schemas
 exports.RegisterSchema = zod_1.z.object({
@@ -21,10 +21,71 @@ exports.CreateTransactionSchema = zod_1.z.object({
     category: zod_1.z.string().optional(),
     option: zod_1.z.enum(['INCOME', 'EXPENSE'], { message: 'Option must be INCOME or EXPENSE' }),
     price: zod_1.z.number().positive('Price must be greater than 0'),
-    method: zod_1.z.string().min(1, 'Payment method is required')
+    method: zod_1.z.string().min(1, 'Payment method is required'),
+    description: zod_1.z.string().optional(),
+    tags: zod_1.z.array(zod_1.z.string()).optional()
+});
+exports.UpdateTransactionSchema = zod_1.z.object({
+    name: zod_1.z.string().min(1).optional(),
+    date: zod_1.z.string().optional(),
+    category: zod_1.z.string().optional(),
+    option: zod_1.z.enum(['INCOME', 'EXPENSE']).optional(),
+    price: zod_1.z.number().positive().optional(),
+    method: zod_1.z.string().min(1).optional(),
+    description: zod_1.z.string().optional(),
+    tags: zod_1.z.array(zod_1.z.string()).optional()
+});
+exports.FilterTransactionsSchema = zod_1.z.object({
+    startDate: zod_1.z.string().optional(),
+    endDate: zod_1.z.string().optional(),
+    category: zod_1.z.string().optional(),
+    option: zod_1.z.enum(['INCOME', 'EXPENSE']).optional(),
+    minPrice: zod_1.z.number().optional(),
+    maxPrice: zod_1.z.number().optional(),
+    search: zod_1.z.string().optional(),
+    limit: zod_1.z.number().int().positive().default(50),
+    offset: zod_1.z.number().int().nonnegative().default(0),
+    sortBy: zod_1.z.enum(['date', 'price', 'name']).default('date'),
+    sortOrder: zod_1.z.enum(['asc', 'desc']).default('desc')
 });
 // Category Schemas
 exports.CreateCategorySchema = zod_1.z.object({
     name: zod_1.z.string().min(1, 'Category name is required').trim()
+});
+// Budget Schemas
+exports.CreateBudgetSchema = zod_1.z.object({
+    category: zod_1.z.string().min(1, 'Category is required'),
+    limit: zod_1.z.number().positive('Budget limit must be greater than 0'),
+    period: zod_1.z.enum(['MONTHLY', 'YEARLY']).default('MONTHLY'),
+    startDate: zod_1.z.string().min(1, 'Start date is required'),
+    endDate: zod_1.z.string().min(1, 'End date is required')
+});
+exports.UpdateBudgetSchema = zod_1.z.object({
+    limit: zod_1.z.number().positive().optional(),
+    period: zod_1.z.enum(['MONTHLY', 'YEARLY']).optional(),
+    startDate: zod_1.z.string().optional(),
+    endDate: zod_1.z.string().optional()
+});
+// Report Schemas
+exports.MonthlyStatementSchema = zod_1.z.object({
+    month: zod_1.z.number().int().min(1).max(12),
+    year: zod_1.z.number().int().positive(),
+    format: zod_1.z.enum(['json', 'csv', 'pdf']).default('json'),
+    detailed: zod_1.z.boolean().optional()
+});
+exports.ExportTransactionsSchema = zod_1.z.object({
+    startDate: zod_1.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+    endDate: zod_1.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+    type: zod_1.z.enum(['transactions', 'statement']),
+    format: zod_1.z.enum(['csv', 'pdf']),
+    pageSize: zod_1.z.number().int().positive().default(1000),
+    page: zod_1.z.number().int().positive().default(1),
+    includeCharts: zod_1.z.boolean().optional()
+});
+exports.CustomReportSchema = zod_1.z.object({
+    startDate: zod_1.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+    endDate: zod_1.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+    reportType: zod_1.z.enum(['summary', 'detailed', 'comparison']).default('summary'),
+    groupBy: zod_1.z.enum(['category', 'method', 'date']).optional()
 });
 //# sourceMappingURL=validation.js.map
