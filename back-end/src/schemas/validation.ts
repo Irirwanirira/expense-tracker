@@ -57,6 +57,22 @@ export const CreateCategorySchema = z.object({
   name: z.string().min(1, 'Category name is required').trim()
 });
 
+// Budget Schemas
+export const CreateBudgetSchema = z.object({
+  category: z.string().min(1, 'Category is required'),
+  limit: z.number().positive('Budget limit must be greater than 0'),
+  period: z.enum(['MONTHLY', 'YEARLY']).default('MONTHLY'),
+  startDate: z.string().min(1, 'Start date is required'),
+  endDate: z.string().min(1, 'End date is required')
+});
+
+export const UpdateBudgetSchema = z.object({
+  limit: z.number().positive().optional(),
+  period: z.enum(['MONTHLY', 'YEARLY']).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional()
+});
+
 // Export types for TypeScript
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
@@ -65,3 +81,5 @@ export type CreateTransactionInput = z.infer<typeof CreateTransactionSchema>;
 export type UpdateTransactionInput = z.infer<typeof UpdateTransactionSchema>;
 export type FilterTransactionsInput = z.infer<typeof FilterTransactionsSchema>;
 export type CreateCategoryInput = z.infer<typeof CreateCategorySchema>;
+export type CreateBudgetInput = z.infer<typeof CreateBudgetSchema>;
+export type UpdateBudgetInput = z.infer<typeof UpdateBudgetSchema>;

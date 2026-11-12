@@ -6,6 +6,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import transactionRoutes from './routes/transactionsEnhanced';
 import dashboardRoutes from './routes/dashboard';
+import budgetRoutes from './routes/budgets';
 import authRoutes from './routes/auth';
 import { authMiddleware } from './middleware/auth';
 
@@ -34,6 +35,7 @@ app.get('/health', (_req: Request, res: Response): void => {
 app.use(authMiddleware);
 app.use(transactionRoutes);
 app.use(dashboardRoutes);
+app.use(budgetRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response): void => {
