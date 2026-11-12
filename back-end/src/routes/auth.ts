@@ -1,27 +1,21 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { User } from '../models/models';
-import { generateTokens, verifyToken } from '../middleware/auth';
+import { generateTokens, verifyToken, AuthRequest } from '../middleware/auth';
+import { RegisterSchema, LoginSchema, RefreshTokenSchema } from '../schemas/validation';
 
 const router = Router();
 
 // POST /v1/api/auth/register
-router.post('/v1/api/auth/register', async (req: Request, res: Response) => {
+router.post('/v1/api/auth/register', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
-
-    // Validation
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ error: 'Password must be at least 6 characters' });
-    }
+    const validatedData = RegisterSchema.parse(req.body);
+    const { email, password } = validatedData;
 
     // Check if user exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
-      return res.status(409).json({ error: 'Email already registered' });
+      res.status(409).json({ error: 'Email already registered' });
+      return;
     }
 
     // Create user
@@ -42,32 +36,38 @@ router.post('/v1/api/auth/register', async (req: Request, res: Response) => {
         refreshToken
       }
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Register error:', err);
-    res.status(500).json({ error: 'Failed to register user' });
+    if (err.name === 'ZodError') {
+      res.status(400).json({
+        success: false,
+        error: 'Validation error',
+        details: err.errors
+      });
+    } else {
+      res.status(500).json({ error: 'Failed to register user' });
+    }
   }
 });
 
 // POST /v1/api/auth/login
-router.post('/v1/api/auth/login', async (req: Request, res: Response) => {
+router.post('/v1/api/auth/login', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
-
-    // Validation
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
-    }
+    const validatedData = LoginSchema.parse(req.body);
+    const { email, password } = validatedData;
 
     // Find user
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      res.status(401).json({ error: 'Invalid email or password' });
+      return;
     }
 
     // Compare password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      res.status(401).json({ error: 'Invalid email or password' });
+      return;
     }
 
     // Generate tokens
@@ -82,24 +82,30 @@ router.post('/v1/api/auth/login', async (req: Request, res: Response) => {
         refreshToken
       }
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Login error:', err);
-    res.status(500).json({ error: 'Failed to login' });
+    if (err.name === 'ZodError') {
+      res.status(400).json({
+        success: false,
+        error: 'Validation error',
+        details: err.errors
+      });
+    } else {
+      res.status(500).json({ error: 'Failed to login' });
+    }
   }
 });
 
 // POST /v1/api/auth/refresh
-router.post('/v1/api/auth/refresh', async (req: Request, res: Response) => {
+router.post('/v1/api/auth/refresh', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-      return res.status(400).json({ error: 'Refresh token is required' });
-    }
+    const validatedData = RefreshTokenSchema.parse(req.body);
+    const { refreshToken } = validatedData;
 
     const decoded = verifyToken(refreshToken);
     if (!decoded) {
-      return res.status(401).json({ error: 'Invalid or expired refresh token' });
+      res.status(401).json({ error: 'Invalid or expired refresh token' });
+      return;
     }
 
     // Generate new tokens
@@ -112,9 +118,17 @@ router.post('/v1/api/auth/refresh', async (req: Request, res: Response) => {
         refreshToken: newRefreshToken
       }
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Refresh token error:', err);
-    res.status(500).json({ error: 'Failed to refresh token' });
+    if (err.name === 'ZodError') {
+      res.status(400).json({
+        success: false,
+        error: 'Validation error',
+        details: err.errors
+      });
+    } else {
+      res.status(500).json({ error: 'Failed to refresh token' });
+    }
   }
 });
 
