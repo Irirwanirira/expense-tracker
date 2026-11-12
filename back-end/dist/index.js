@@ -9,6 +9,8 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const transactions_1 = __importDefault(require("./routes/transactions"));
+const auth_1 = __importDefault(require("./routes/auth"));
+const auth_2 = require("./middleware/auth");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 const DB_URL = process.env.DB_URL;
@@ -19,12 +21,15 @@ if (!DB_URL) {
 // Middleware
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-// Routes
-app.use(transactions_1.default);
+// Public Routes
+app.use(auth_1.default);
 // Health check endpoint
 app.get('/health', (_req, res) => {
     res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
+// Protected Routes (require authentication)
+app.use(auth_2.authMiddleware);
+app.use(transactions_1.default);
 // 404 handler
 app.use((_req, res) => {
     res.status(404).json({ error: 'Endpoint not found' });

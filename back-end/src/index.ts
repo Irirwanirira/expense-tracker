@@ -5,6 +5,8 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import transactionRoutes from './routes/transactions';
+import authRoutes from './routes/auth';
+import { authMiddleware } from './middleware/auth';
 
 const app: Express = express();
 const PORT = process.env.PORT || 5000;
@@ -19,13 +21,17 @@ if (!DB_URL) {
 app.use(express.json());
 app.use(cors());
 
-// Routes
-app.use(transactionRoutes);
+// Public Routes
+app.use(authRoutes);
 
 // Health check endpoint
 app.get('/health', (_req: Request, res: Response): void => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
 });
+
+// Protected Routes (require authentication)
+app.use(authMiddleware);
+app.use(transactionRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response): void => {

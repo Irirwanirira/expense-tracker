@@ -32,9 +32,13 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Category = exports.Transaction = void 0;
+exports.Category = exports.Transaction = exports.User = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // Transaction Schema
 const transactionSchema = new mongoose_1.Schema({
     name: { type: String, required: true, trim: true },
@@ -53,12 +57,37 @@ const transactionSchema = new mongoose_1.Schema({
 const categorySchema = new mongoose_1.Schema({
     name: { type: String, required: true, trim: true, unique: true }
 }, { timestamps: true });
+// User Schema
+const userSchema = new mongoose_1.Schema({
+    email: { type: String, required: true, trim: true, lowercase: true, unique: true },
+    password: { type: String, required: true, minlength: 6 }
+}, { timestamps: true });
+// Hash password before saving
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password'))
+        return next();
+    try {
+        const salt = await bcryptjs_1.default.genSalt(10);
+        this.password = await bcryptjs_1.default.hash(this.password, salt);
+        next();
+    }
+    catch (err) {
+        next(err);
+    }
+});
+// Method to compare passwords
+userSchema.methods.comparePassword = async function (password) {
+    return bcryptjs_1.default.compare(password, this.password);
+};
 // Create indexes for better query performance
 transactionSchema.index({ date: -1 });
 transactionSchema.index({ category: 1 });
 transactionSchema.index({ option: 1 });
+transactionSchema.index({ email: 1 });
 categorySchema.index({ name: 1 });
+userSchema.index({ email: 1 });
 // Models
+exports.User = mongoose_1.default.model('users', userSchema);
 exports.Transaction = mongoose_1.default.model('transactions', transactionSchema);
 exports.Category = mongoose_1.default.model('categories', categorySchema);
 //# sourceMappingURL=models.js.map

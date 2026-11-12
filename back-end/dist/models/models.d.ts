@@ -1,5 +1,13 @@
 import mongoose, { Document } from 'mongoose';
+export interface IUser extends Document {
+    email: string;
+    password: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    comparePassword(password: string): Promise<boolean>;
+}
 export interface ITransaction extends Document {
+    email: string;
     name: string;
     date: string;
     method: string;
@@ -14,6 +22,9 @@ export interface ICategory extends Document {
     createdAt?: Date;
     updatedAt?: Date;
 }
+export declare const User: mongoose.Model<IUser, {}, {}, {}, Document<unknown, {}, IUser> & IUser & {
+    _id: mongoose.Types.ObjectId;
+}, any>;
 export declare const Transaction: mongoose.Model<ITransaction, {}, {}, {}, Document<unknown, {}, ITransaction> & ITransaction & {
     _id: mongoose.Types.ObjectId;
 }, any>;

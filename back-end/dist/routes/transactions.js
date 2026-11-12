@@ -7,12 +7,15 @@ const router = (0, express_1.Router)();
 router.post('/v1/api/transactions', async (req, res) => {
     try {
         const { name, date, category, option, price, method } = req.body;
+        const email = req.email;
         if (!name || !date || !option || price === undefined || !method) {
-            return res.status(400).json({
+            res.status(400).json({
                 error: 'Missing required fields: name, date, option, price, method'
             });
+            return;
         }
         const newTrans = await models_1.Transaction.create({
+            email,
             name,
             date,
             category,
@@ -39,9 +42,9 @@ router.post('/v1/api/transactions', async (req, res) => {
     }
 });
 // GET /v1/api/transactions
-router.get('/v1/api/transactions', async (_req, res) => {
+router.get('/v1/api/transactions', async (req, res) => {
     try {
-        const allTrans = await models_1.Transaction.find().sort({ date: -1 });
+        const allTrans = await models_1.Transaction.find({ email: req.email }).sort({ date: -1 });
         res.status(200).json({
             success: true,
             data: allTrans
@@ -57,11 +60,13 @@ router.delete('/v1/api/transactions/:id', async (req, res) => {
     try {
         const { id } = req.params;
         if (!id) {
-            return res.status(400).json({ error: 'Transaction ID is required' });
+            res.status(400).json({ error: 'Transaction ID is required' });
+            return;
         }
         const deletedTrans = await models_1.Transaction.findByIdAndDelete(id);
         if (!deletedTrans) {
-            return res.status(404).json({ error: 'Transaction not found' });
+            res.status(404).json({ error: 'Transaction not found' });
+            return;
         }
         res.status(200).json({
             success: true,
@@ -79,11 +84,13 @@ router.post('/v1/api/categories', async (req, res) => {
     try {
         const { name } = req.body;
         if (!name || name.trim() === '') {
-            return res.status(400).json({ error: 'Category name is required' });
+            res.status(400).json({ error: 'Category name is required' });
+            return;
         }
         const existing = await models_1.Category.findOne({ name: name.trim() });
         if (existing) {
-            return res.status(409).json({ error: 'Category already exists' });
+            res.status(409).json({ error: 'Category already exists' });
+            return;
         }
         const newCategory = await models_1.Category.create({ name: name.trim() });
         res.status(201).json({
@@ -115,11 +122,13 @@ router.delete('/v1/api/categories/:id', async (req, res) => {
     try {
         const { id } = req.params;
         if (!id) {
-            return res.status(400).json({ error: 'Category ID is required' });
+            res.status(400).json({ error: 'Category ID is required' });
+            return;
         }
         const deletedCategory = await models_1.Category.findByIdAndDelete(id);
         if (!deletedCategory) {
-            return res.status(404).json({ error: 'Category not found' });
+            res.status(404).json({ error: 'Category not found' });
+            return;
         }
         res.status(200).json({
             success: true,

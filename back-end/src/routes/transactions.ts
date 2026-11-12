@@ -1,20 +1,24 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { Transaction, Category } from '../models/models';
+import { AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
 // POST /v1/api/transactions
-router.post('/v1/api/transactions', async (req: Request, res: Response) => {
+router.post('/v1/api/transactions', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { name, date, category, option, price, method } = req.body;
+    const email = req.email;
 
     if (!name || !date || !option || price === undefined || !method) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Missing required fields: name, date, option, price, method'
       });
+      return;
     }
 
     const newTrans = await Transaction.create({
+      email,
       name,
       date,
       category,
@@ -42,9 +46,9 @@ router.post('/v1/api/transactions', async (req: Request, res: Response) => {
 });
 
 // GET /v1/api/transactions
-router.get('/v1/api/transactions', async (_req: Request, res: Response) => {
+router.get('/v1/api/transactions', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const allTrans = await Transaction.find().sort({ date: -1 });
+    const allTrans = await Transaction.find({ email: req.email }).sort({ date: -1 });
     res.status(200).json({
       success: true,
       data: allTrans
@@ -56,18 +60,20 @@ router.get('/v1/api/transactions', async (_req: Request, res: Response) => {
 });
 
 // DELETE /v1/api/transactions/:id
-router.delete('/v1/api/transactions/:id', async (req: Request, res: Response) => {
+router.delete('/v1/api/transactions/:id', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
     if (!id) {
-      return res.status(400).json({ error: 'Transaction ID is required' });
+      res.status(400).json({ error: 'Transaction ID is required' });
+      return;
     }
 
     const deletedTrans = await Transaction.findByIdAndDelete(id);
 
     if (!deletedTrans) {
-      return res.status(404).json({ error: 'Transaction not found' });
+      res.status(404).json({ error: 'Transaction not found' });
+      return;
     }
 
     res.status(200).json({
@@ -82,17 +88,19 @@ router.delete('/v1/api/transactions/:id', async (req: Request, res: Response) =>
 });
 
 // POST /v1/api/categories
-router.post('/v1/api/categories', async (req: Request, res: Response) => {
+router.post('/v1/api/categories', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { name } = req.body;
 
     if (!name || name.trim() === '') {
-      return res.status(400).json({ error: 'Category name is required' });
+      res.status(400).json({ error: 'Category name is required' });
+      return;
     }
 
     const existing = await Category.findOne({ name: name.trim() });
     if (existing) {
-      return res.status(409).json({ error: 'Category already exists' });
+      res.status(409).json({ error: 'Category already exists' });
+      return;
     }
 
     const newCategory = await Category.create({ name: name.trim() });
@@ -107,7 +115,7 @@ router.post('/v1/api/categories', async (req: Request, res: Response) => {
 });
 
 // GET /v1/api/categories
-router.get('/v1/api/categories', async (_req: Request, res: Response) => {
+router.get('/v1/api/categories', async (_req: AuthRequest, res: Response): Promise<void> => {
   try {
     const allCategories = await Category.find().sort({ name: 1 });
     res.status(200).json({
@@ -121,18 +129,20 @@ router.get('/v1/api/categories', async (_req: Request, res: Response) => {
 });
 
 // DELETE /v1/api/categories/:id
-router.delete('/v1/api/categories/:id', async (req: Request, res: Response) => {
+router.delete('/v1/api/categories/:id', async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
     if (!id) {
-      return res.status(400).json({ error: 'Category ID is required' });
+      res.status(400).json({ error: 'Category ID is required' });
+      return;
     }
 
     const deletedCategory = await Category.findByIdAndDelete(id);
 
     if (!deletedCategory) {
-      return res.status(404).json({ error: 'Category not found' });
+      res.status(404).json({ error: 'Category not found' });
+      return;
     }
 
     res.status(200).json({
