@@ -4,6 +4,8 @@ dotenv.config();
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger.json';
 import transactionRoutes from './routes/transactionsEnhanced';
 import dashboardRoutes from './routes/dashboard';
 import budgetRoutes from './routes/budgets';
@@ -23,6 +25,10 @@ if (!DB_URL) {
 // Middleware
 app.use(express.json());
 app.use(cors());
+
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerDocument as any));
 
 // Public Routes
 app.use(authRoutes);

@@ -8,6 +8,8 @@ dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const swagger_json_1 = __importDefault(require("../swagger.json"));
 const transactionsEnhanced_1 = __importDefault(require("./routes/transactionsEnhanced"));
 const dashboard_1 = __importDefault(require("./routes/dashboard"));
 const budgets_1 = __importDefault(require("./routes/budgets"));
@@ -24,6 +26,9 @@ if (!DB_URL) {
 // Middleware
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+// Swagger API Documentation
+app.use('/api-docs', swagger_ui_express_1.default.serve);
+app.get('/api-docs', swagger_ui_express_1.default.setup(swagger_json_1.default));
 // Public Routes
 app.use(auth_1.default);
 // Health check endpoint
