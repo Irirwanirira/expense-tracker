@@ -1,43 +1,50 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 const url = `${API_BASE_URL}/v1/api/transactions`;
+
+// Create axios instance with auth header
+const getAuthHeader = () => {
+  const token = localStorage.getItem('accessToken');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 export const fetchTransactions = createAsyncThunk(
   'transaction/fetch',
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(url);
-      return res.data;
+      const res = await axios.get(url, { headers: getAuthHeader() });
+      return res.data.data || [];
     } catch (err) {
-      console.log(err);
+      console.error('Fetch transactions error:', err);
+      return rejectWithValue(err.response?.data?.error || 'Failed to fetch transactions');
     }
   }
 );
 
 export const postTransactions = createAsyncThunk(
   'transaction/post',
-  async (newTrans) => {
+  async (newTrans, { rejectWithValue }) => {
     try {
-      const res = await axios.post(url, newTrans);
-      console.log(newTrans);
-
-      return res.data;
+      const res = await axios.post(url, newTrans, { headers: getAuthHeader() });
+      return res.data.data;
     } catch (err) {
-      console.log(err);
+      console.error('Post transaction error:', err);
+      return rejectWithValue(err.response?.data?.error || 'Failed to create transaction');
     }
   }
 );
 
 export const deleteTransactions = createAsyncThunk(
   'transaction/delete',
-  async (transId) => {
+  async (transId, { rejectWithValue }) => {
     try {
-      const res = await axios.delete(`${url}/${transId}`);
-      return res.data;
+      await axios.delete(`${url}/${transId}`, { headers: getAuthHeader() });
+      return transId;
     } catch (err) {
-      console.log(err);
+      console.error('Delete transaction error:', err);
+      return rejectWithValue(err.response?.data?.error || 'Failed to delete transaction');
     }
   }
 );
@@ -45,6 +52,7 @@ export const deleteTransactions = createAsyncThunk(
 const initialState = {
   data: [],
   isLoading: false,
+  error: null,
 };
 
 const transactionSlice = createSlice({
@@ -52,25 +60,46 @@ const transactionSlice = createSlice({
   initialState,
   extraReducers(builder) {
     builder
-      .addCase(fetchTransactions.pending, (state, action) => {
+      .addCase(fetchTransactions.pending, (state) => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchTransactions.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload.transactions;
+        state.data = Array.isArray(action.payload) ? action.payload : [];
+        state.error = null;
       })
       .addCase(fetchTransactions.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(postTransactions.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(postTransactions.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = [...state.data, action.payload.newTrans];
+        if (action.payload) {
+          state.data = [...state.data, action.payload];
+        }
+        state.error = null;
+      })
+      .addCase(postTransactions.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteTransactions.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(deleteTransactions.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = state.data.filter(
-          (trans) => trans._id !== action.payload.id
-        );
+        state.data = state.data.filter((trans) => trans._id !== action.payload);
+        state.error = null;
+      })
+      .addCase(deleteTransactions.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
