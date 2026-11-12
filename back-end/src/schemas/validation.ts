@@ -73,6 +73,31 @@ export const UpdateBudgetSchema = z.object({
   endDate: z.string().optional()
 });
 
+// Report Schemas
+export const MonthlyStatementSchema = z.object({
+  month: z.number().int().min(1).max(12),
+  year: z.number().int().positive(),
+  format: z.enum(['json', 'csv', 'pdf']).default('json'),
+  detailed: z.boolean().optional()
+});
+
+export const ExportTransactionsSchema = z.object({
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+  type: z.enum(['transactions', 'statement']),
+  format: z.enum(['csv', 'pdf']),
+  pageSize: z.number().int().positive().default(1000),
+  page: z.number().int().positive().default(1),
+  includeCharts: z.boolean().optional()
+});
+
+export const CustomReportSchema = z.object({
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+  reportType: z.enum(['summary', 'detailed', 'comparison']).default('summary'),
+  groupBy: z.enum(['category', 'method', 'date']).optional()
+});
+
 // Export types for TypeScript
 export type RegisterInput = z.infer<typeof RegisterSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
@@ -83,3 +108,6 @@ export type FilterTransactionsInput = z.infer<typeof FilterTransactionsSchema>;
 export type CreateCategoryInput = z.infer<typeof CreateCategorySchema>;
 export type CreateBudgetInput = z.infer<typeof CreateBudgetSchema>;
 export type UpdateBudgetInput = z.infer<typeof UpdateBudgetSchema>;
+export type MonthlyStatementInput = z.infer<typeof MonthlyStatementSchema>;
+export type ExportTransactionsInput = z.infer<typeof ExportTransactionsSchema>;
+export type CustomReportInput = z.infer<typeof CustomReportSchema>;

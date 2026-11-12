@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import transactionRoutes from './routes/transactionsEnhanced';
 import dashboardRoutes from './routes/dashboard';
 import budgetRoutes from './routes/budgets';
+import reportRoutes from './routes/reports';
 import authRoutes from './routes/auth';
 import { authMiddleware } from './middleware/auth';
 
@@ -36,6 +37,7 @@ app.use(authMiddleware);
 app.use(transactionRoutes);
 app.use(dashboardRoutes);
 app.use(budgetRoutes);
+app.use(reportRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response): void => {
